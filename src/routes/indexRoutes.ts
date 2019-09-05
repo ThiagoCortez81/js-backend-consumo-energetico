@@ -10,7 +10,7 @@ class IndexRoutes{
 
     config(): void{
         this.router.get('/', (req, res) => {
-            res.send({"message": "It works!"})
+            res.send({"message": "It works on AZURE!"})
         });
     }
 }
