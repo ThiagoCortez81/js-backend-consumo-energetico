@@ -14,7 +14,7 @@ class Server {
     }
 
     config(): void {
-        this.app.set('port', process.env.PORT || 3000);
+        this.app.set('port', process.env.PORT || 80);
         this.app.set('timeout', (30 * 60000));
         this.app.use(cors());
         this.app.use(express.json());
