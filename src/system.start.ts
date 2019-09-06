@@ -1,7 +1,7 @@
 import express, {Application} from 'express';
 import cors from 'cors';
 
-import indexRoutes from './routes/indexRoutes';
+import sensorRoutes from './routes/sensorRoutes';
 
 class Server {
 
@@ -22,7 +22,7 @@ class Server {
     }
 
     routes(): void {
-        this.app.use('/appsensor', indexRoutes);
+        this.app.use('/appsensor', sensorRoutes);
 
         this.app.get('/api', (req, res) => {
             res.send({"message": "It works!"})
