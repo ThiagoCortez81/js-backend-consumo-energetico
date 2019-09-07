@@ -5,7 +5,7 @@
   "main": "dist/server.start.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "npm run build && node dist/system.start.js"
+    "start": "npm run build && node dist/src/system.start.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +15,15 @@
     "@types/mysql": "^2.15.7",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongoose": "^5.6.13",
+    "morgan": "^1.9.1",
     "mysql": "^2.17.1",
+    "node-forge": "^0.9.0",
     "typescript": "^3.6.2"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.5.17",
+    "@types/morgan": "^1.7.37",
+    "@types/node-forge": "^0.8.6"
   }
 }
