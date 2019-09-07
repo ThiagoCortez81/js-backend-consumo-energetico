@@ -11,6 +11,7 @@ import {MongoClient} from "./database.start";
 class Server {
 
     public app: Application;
+    public mongoUrl = config.databaseConf.mongo.host;
 
     constructor() {
         this.app = express();
@@ -19,8 +20,13 @@ class Server {
     }
 
     config(): void {
-        this.app.set('port', process.env.PORT || 80);
-        // this.app.set('port', process.env.PORT || 3000);
+        if (process.env.AMBIENTE == "prod") {
+            this.app.set('port', process.env.PORT || 80);
+            this.mongoUrl = "localhost";
+        } else {
+            this.app.set('port', process.env.PORT || 3000);
+        }
+
         this.app.set('timeout', (30 * 60000));
         this.app.use(morgan('dev'));
         this.app.use(cors());
@@ -40,7 +46,7 @@ class Server {
         this.app.listen(this.app.get('port'), async () => {
             console.log('Server on port', this.app.get('port'));
             const connection: Mongoose = await MongoClient.mongoConnection;
-            console.log(`MongoDB conectado em 'mongodb://${config.databaseConf.mongo.host}/${config.databaseConf.mongo.database}' com sucesso!`);
+            console.log(`MongoDB conectado em 'mongodb://${this.mongoUrl}/${config.databaseConf.mongo.database}' com sucesso!`);
         });
     }
 }
