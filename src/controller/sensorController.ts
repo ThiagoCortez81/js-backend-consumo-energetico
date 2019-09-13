@@ -10,6 +10,9 @@ class SensorController {
         if (Utils.isAuthenticated(headers)) {
             const body = req.body;
 
+            // Log
+            console.info(`Recebi um POST em /cadastrarDadosMedicao. Dados ${JSON.stringify(body)}`);
+
             const macSensor = body.macSensor;
             const corrente = body.corrente;
             const tensao = 127; //TODO: Alterar para tensão no momento do cadastro do sensor

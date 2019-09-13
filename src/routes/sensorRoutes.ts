@@ -19,6 +19,9 @@ class SensorRoutes {
             const macAddress = body.macAddress;
             const key = Utils.gerarChave(macAddress);
 
+            // Log
+            console.info(`Recebi um POST em /auth. Dados ${JSON.stringify(body)}`);
+
             // TODO: Fazer validação do MAC no banco de dados
 
 
