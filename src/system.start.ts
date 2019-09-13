@@ -2,7 +2,7 @@ import express, {Application} from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 
-
+import apiRoutes from "./routes/apiRoutes";
 import sensorRoutes from './routes/sensorRoutes';
 import {Mongoose} from "mongoose";
 import config from "../config.json";
@@ -37,9 +37,7 @@ class Server {
     routes(): void {
         this.app.use('/appsensor', sensorRoutes);
 
-        this.app.get('/api', (req, res) => {
-            res.send({"message": "It works!"})
-        });
+        this.app.use('/api', apiRoutes);
     }
 
     start(): void {
