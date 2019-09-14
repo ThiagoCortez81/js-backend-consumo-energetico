@@ -19,7 +19,7 @@ class UserController {
             response = await UserController.buscaDadosUsuario(email, senha)
             // Faço busca no banco
         } else {
-            response = UserController.geraRespostaCompletaCadastro(false, 'Preencha todos os campos!');
+            response = UserController.geraRespostaCompleta(false, 'Preencha todos os campos!');
         }
 
         res.send(response);
@@ -56,10 +56,10 @@ class UserController {
                     console.error(e);
                 }
             } else {
-                response = UserController.geraRespostaCompletaCadastro(false, 'Erro ao cadastrar. As senhas inseridas não conferem!');
+                response = UserController.geraRespostaCompleta(false, 'Erro ao cadastrar. As senhas inseridas não conferem!');
             }
         } else {
-            response = UserController.geraRespostaCompletaCadastro(false, 'Erro ao cadastrar. Preencha todos os campos!');
+            response = UserController.geraRespostaCompleta(false, 'Erro ao cadastrar. Preencha todos os campos!');
         }
 
         res.send(response);
@@ -78,7 +78,7 @@ class UserController {
             return this.processarRespostaUsuarios(listUsuario);
         } catch (e) {
             console.error(e);
-            return UserController.geraRespostaCompletaCadastro(false, "Ocorreu um erro interno");
+            return UserController.geraRespostaCompleta(false, "Ocorreu um erro interno");
         }
     }
 
@@ -93,7 +93,7 @@ class UserController {
                 }
             };
         } else {
-            return UserController.geraRespostaCompletaCadastro(false, 'Combinação de usuário/senha não conferem');
+            return UserController.geraRespostaCompleta(false, 'Combinação de usuário/senha não conferem');
         }
     }
 
@@ -110,12 +110,12 @@ class UserController {
         const mongoInsertion = await Usuarios.collection.insertOne(usuarios);
 
         if (mongoInsertion.insertedId)
-            return this.geraRespostaCompletaCadastro(true, 'Usuario inserido com sucesso!');
+            return this.geraRespostaCompleta(true, 'Usuario inserido com sucesso!');
         else
-            return this.geraRespostaCompletaCadastro(false, 'Erro ao cadastrar usuário, tente novamente mais tarde!');
+            return this.geraRespostaCompleta(false, 'Erro ao cadastrar usuário, tente novamente mais tarde!');
     }
 
-    static geraRespostaCompletaCadastro(success: boolean, msg: String) {
+    static geraRespostaCompleta(success: boolean, msg: String) {
         return {
             success: success,
             msg: msg
