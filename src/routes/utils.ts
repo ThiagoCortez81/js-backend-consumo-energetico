@@ -28,4 +28,8 @@ export class Utils {
     static isStrValid(str: String){
         return (str != null && str != undefined && str != "");
     }
+
+    static listTest(list: Array<any>){
+        return (list != null && list != undefined);
+    }
 }

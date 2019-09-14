@@ -14,16 +14,7 @@ class ApiRoutes {
             res.send({"message": "It works!"})
         });
 
-        this.router.post('/auth', (req, res) => {
-            const body = req.body;
-            const email = body.email;
-            const senha = body.senha;
-
-            const returnObj = {
-                success: true
-            };
-            res.json(returnObj);
-        });
+        this.router.post('/login', userController.loginUsuario);
         this.router.post('/cadastrarUsuario', userController.cadastrarUsuario);
     }
 }

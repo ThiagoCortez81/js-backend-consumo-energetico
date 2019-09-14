@@ -17,9 +17,7 @@ class SensorController {
             const corrente = body.corrente;
             const tensao = 127; //TODO: Alterar para tensão no momento do cadastro do sensor
             const potencia = (corrente * tensao) / 1000; //W para KW
-            const timestamp = body.timestamp;
-            const dataEnvioObj = new Date(timestamp);
-            const dataEnvio = `${dataEnvioObj.getDay()}/${dataEnvioObj.getMonth()}/${dataEnvioObj.getFullYear()} ${dataEnvioObj.getHours()}:${dataEnvioObj.getMinutes()}:${dataEnvioObj.getSeconds()}`;
+            const dataEnvio = body.timestamp;
 
             response = await SensorController.salvaDadosSensor(corrente, potencia, dataEnvio, macSensor);
         } else {
