@@ -1,10 +1,13 @@
 import {Utils} from "../routes/utils";
 import * as mongoModels from '../models/mongo/index'
 import * as mongoose from "mongoose";
+import * as jwt from "jsonwebtoken";
+
+const SECRET = process.env.SECRET || "sleocgrient";
 
 class UserController {
     public async loginUsuario(req: any, res: any) {
-        let response: {};
+        let response: any;
         const body = req.body;
 
         // Log
@@ -16,8 +19,12 @@ class UserController {
         if (Utils.isStrValid(email) && Utils.isStrValid(senha)) {
             // Criptografando senha
             senha = Utils.encryptPassword(senha);
-            response = await UserController.buscaDadosUsuario(email, senha)
             // Faço busca no banco
+            response = await UserController.buscaDadosUsuario(email, senha);
+            if (response.success)
+                response['token'] = jwt.sign({senha}, SECRET, {
+                    expiresIn: 60 * 60 // 1 Hora
+                });
         } else {
             response = UserController.geraRespostaCompleta(false, 'Preencha todos os campos!');
         }
@@ -118,7 +125,8 @@ class UserController {
     static geraRespostaCompleta(success: boolean, msg: String) {
         return {
             success: success,
-            msg: msg
+            msg: msg,
+            token: ''
         };
     }
 }

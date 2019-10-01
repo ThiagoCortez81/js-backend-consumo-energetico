@@ -13,7 +13,7 @@ class SensorController {
             // Log
             console.info(`Recebi um POST em /cadastrarDadosMedicao. Dados ${JSON.stringify(body)}`);
 
-            const macSensor = body.macSensor;
+            const macSensor = body.macsensor;
             const corrente = body.corrente;
             const tensao = 127; //TODO: Alterar para tensão no momento do cadastro do sensor
             const potencia = (corrente * tensao) / 1000; //W para KW
