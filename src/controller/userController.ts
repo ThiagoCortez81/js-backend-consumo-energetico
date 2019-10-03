@@ -22,9 +22,11 @@ class UserController {
             // Faço busca no banco
             response = await UserController.buscaDadosUsuario(email, senha);
             if (response.success)
-                response['token'] = jwt.sign({senha}, SECRET, {
+                response['token'] = jwt.sign({"usuario": response.usuario}, SECRET, {
                     expiresIn: 60 * 60 // 1 Hora
                 });
+
+            delete response.usuario._id;
         } else {
             response = UserController.geraRespostaCompleta(false, 'Preencha todos os campos!');
         }
@@ -95,6 +97,7 @@ class UserController {
             return {
                 success: true,
                 usuario: {
+                    _id: user._id,
                     nome: user.nome,
                     modulos: user.modulos
                 }
