@@ -20,7 +20,7 @@ class ApiRoutes {
         this.router.post('/cadastrarUsuario', userController.cadastrarUsuario);
 
         this.router.post('/listarSensoresCliente', Utils.verifyJWT, sensorController.listarSensoresCliente);
-        this.router.post('/alterarSensorApelido', Utils.verifyJWT, sensorController.altersarSensorApelido);
+        this.router.post('/alterarSensorApelido', Utils.verifyJWT, sensorController.alterarSensorApelido);
     }
 }
 
