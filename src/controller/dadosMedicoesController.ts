@@ -34,11 +34,15 @@ class DadosMedicoesController {
     }
 
     public async listarConsumoSensor(req: any, res: any) {
-        let response = {};
+        let response: any = {
+            consumoTotal: 0,
+            dadosMedicoes: []
+        };
         const body: BodyFiltroConsumo = req.body;
+        response.dadosMedicoes = await DadosMedicoesController.listarMedicoes(body.dataMin, body.dataMax, body.macSensor);
+        response.consumoTotal = DadosMedicoesController.somarTodasPotencias(response.dadosMedicoes);
 
-
-        res.send(await DadosMedicoesController.listarMedicoes(body.dataMin, body.dataMax, body.macSensor));
+        res.send(response);
     }
 
     static async salvaDadosSensor(corrente: number, potencia: number, dataEnvio: String, macSensor: String) {
@@ -85,6 +89,16 @@ class DadosMedicoesController {
         const dadosMedicoes: any[] = await DadosMedicao.find(filter);
 
         return dadosMedicoes;
+    }
+
+    static somarTodasPotencias(dadosMedicoes: any[]): number {
+        let potenciaTotal = 0;
+
+        for (let dadoMedicao of dadosMedicoes) {
+            potenciaTotal += dadoMedicao.potencia;
+        }
+
+        return potenciaTotal;
     }
 }
 
