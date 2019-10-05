@@ -48,4 +48,6 @@ export class Utils {
             next();
         });
     }
+
+    // static converteData
 }

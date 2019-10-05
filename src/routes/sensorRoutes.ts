@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import sensorController from "../controller/sensorController";
+import dadosMedicoesController from "../controller/dadosMedicoesController";
 import {Utils} from "./utils";
 
 class SensorRoutes {
@@ -32,7 +33,7 @@ class SensorRoutes {
             };
             res.json(returnObj);
         });
-        this.router.post('/cadastrarDadosMedicao', sensorController.cadastrarDadosMedicao);
+        this.router.post('/cadastrarDadosMedicao', dadosMedicoesController.cadastrarDadosMedicao);
     }
 }
 
