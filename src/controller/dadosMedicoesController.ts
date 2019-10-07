@@ -34,14 +34,18 @@ class DadosMedicoesController {
     }
 
     public async listarConsumoSensor(req: any, res: any) {
-        let response: any = {
-            consumoTotal: 0,
-            dadosMedicoes: []
-        };
         const body: BodyFiltroConsumo = req.body;
-        response.dadosMedicoes = await DadosMedicoesController.listarMedicoes(body.dataMin, body.dataMax, body.macSensor);
-        response.consumoTotal = DadosMedicoesController.somarTodasPotencias(response.dadosMedicoes);
 
+        let dadosMedicoes = await DadosMedicoesController.listarMedicoes(body.dataMin, body.dataMax, body.macSensor);
+
+        let response: any = {
+            isAuthenticated: true,
+            consumoTotal: dadosMedicoes.length,
+            dadosMedicoes: {}
+        };
+
+        response.dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(dadosMedicoes);
+        response.consumoTotal = DadosMedicoesController.somarTodasPotencias(response.dadosMedicoes);
         res.send(response);
     }
 
@@ -83,22 +87,37 @@ class DadosMedicoesController {
             filter['$and'].push({macSensor: macSensor});
         }
 
-        console.log('filter-> ', JSON.stringify(filter));
+        console.debug('ListarMedicoes recebeu filtro->', JSON.stringify(filter));
 
         let DadosMedicao = mongoose.model('DadosMedicao', mongoModels.DadosMedicao);
-        const dadosMedicoes: any[] = await DadosMedicao.find(filter);
+        const dadosMedicoes: any[] = await DadosMedicao.find(filter).sort({dataEnvio: 1});
 
         return dadosMedicoes;
     }
 
-    static somarTodasPotencias(dadosMedicoes: any[]): number {
+    static somarTodasPotencias(dadosMedicoes: any): number {
         let potenciaTotal = 0;
+        const keys = Object.keys(dadosMedicoes);
 
-        for (let dadoMedicao of dadosMedicoes) {
-            potenciaTotal += dadoMedicao.potencia;
+        for (let key of keys) {
+            potenciaTotal += dadosMedicoes[key];
         }
 
         return potenciaTotal;
+    }
+
+    static agruparDadosMedicaoDia(dadosMedicoes: any[]) {
+        let localDadosMedicao: any = {};
+
+        for (let dadoMedicao of dadosMedicoes) {
+            const keyDay = dadoMedicao.dataEnvio.substring(0, 10);
+            if (Object.keys(localDadosMedicao).indexOf(keyDay) == -1)
+                localDadosMedicao[keyDay] = 0;
+
+            localDadosMedicao[keyDay] += dadoMedicao.potencia;
+        }
+
+        return localDadosMedicao;
     }
 }
 

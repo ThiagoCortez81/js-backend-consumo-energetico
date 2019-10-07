@@ -24,7 +24,7 @@ class ApiRoutes {
         this.router.post('/alterarSensorApelido', Utils.verifyJWT, sensorController.alterarSensorApelido);
 
         // Listar consumo
-        this.router.post('/listarConsumoSensor', /*Utils.verifyJWT, */dadosMedicoesController.listarConsumoSensor);
+        this.router.post('/listarConsumoSensor', Utils.verifyJWT, dadosMedicoesController.listarConsumoSensor);
     }
 }
 
