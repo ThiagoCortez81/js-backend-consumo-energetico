@@ -11,10 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/apicache": "^1.2.0",
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.1",
     "@types/jsonwebtoken": "^8.3.4",
     "@types/mysql": "^2.15.7",
+    "apicache": "^1.5.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
