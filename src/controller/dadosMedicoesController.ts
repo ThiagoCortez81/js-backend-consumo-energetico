@@ -3,6 +3,7 @@ import * as mongoModels from '../models/mongo/index'
 import * as mongoose from "mongoose";
 import {mongo} from "mongoose";
 import {BodyFiltroConsumo} from "../models";
+import {SensorController} from "./sensorController";
 
 class DadosMedicoesController {
     public async cadastrarDadosMedicao(req: any, res: any) {
@@ -49,7 +50,7 @@ class DadosMedicoesController {
         res.send(response);
     }
 
-    static async salvaDadosSensor(corrente: number, potencia: number, dataEnvio: String, macSensor: String) {
+    static async salvaDadosSensor(corrente: number, potencia: number, dataEnvio: string, macSensor: string) {
         let DadosMedicao = mongoose.model('DadosMedicao', mongoModels.DadosMedicao);
         const dadosMedicao = new DadosMedicao({
             corrente: corrente,
@@ -60,7 +61,11 @@ class DadosMedicoesController {
 
         const mongoInsertion = await DadosMedicao.collection.insertOne(dadosMedicao);
 
-        if (mongoInsertion.insertedId)
+        const tzoffset = 18000000;
+        let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().replace("T", " ").replace("Z", "");
+        localISOTime = localISOTime.substr(0, localISOTime.length - 4);
+
+        if (mongoInsertion.insertedId && SensorController.atualizacaoDataSensor(macSensor, localISOTime))
             return {
                 id: mongoInsertion.insertedId,
                 success: true,

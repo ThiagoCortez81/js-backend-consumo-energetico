@@ -3,7 +3,7 @@ import * as mongoModels from '../models/mongo/index'
 import * as mongoose from "mongoose";
 import {mongo} from "mongoose";
 
-class SensorController {
+export class SensorController {
     public async listarSensoresCliente(req: any, res: any) {
         let response = {
             isAuthenticated: true,
@@ -52,6 +52,21 @@ class SensorController {
         const sensor: any = await Sensores.findOne({_id: idSensor});
         if (sensor != null) {
             sensor.apelido = apelido;
+
+            await sensor.save();
+            success = true;
+        }
+
+        return success;
+    }
+
+    public static async atualizacaoDataSensor(macSensor: string, ultimaComunicacao: string) {
+        let success = false;
+
+        let Sensores = mongoose.model('Sensores', mongoModels.Sensores);
+        const sensor: any = await Sensores.findOne({macSensor: macSensor});
+        if (sensor != null) {
+            sensor.ultimaComunicacao = ultimaComunicacao;
 
             await sensor.save();
             success = true;
