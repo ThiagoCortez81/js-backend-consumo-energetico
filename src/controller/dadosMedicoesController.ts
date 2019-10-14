@@ -4,6 +4,7 @@ import * as mongoose from "mongoose";
 import {mongo} from "mongoose";
 import {BodyFiltroConsumo} from "../models";
 import {SensorController} from "./sensorController";
+import {NotificationController} from "./notificationController";
 
 class DadosMedicoesController {
     public async cadastrarDadosMedicao(req: any, res: any) {
@@ -23,6 +24,9 @@ class DadosMedicoesController {
             const dataEnvio = body.timestamp;
 
             response = await DadosMedicoesController.salvaDadosSensor(corrente, potencia, dataEnvio, macSensor);
+
+            // Preciso fazer tudo assincrono, pois essa parte não pode atrapalhar o sync do sensor...
+            DadosMedicoesController.verificaNotificacaoSmartphones(macSensor);
         } else {
             response = {
                 id: null,
@@ -61,9 +65,7 @@ class DadosMedicoesController {
 
         const mongoInsertion = await DadosMedicao.collection.insertOne(dadosMedicao);
 
-        const tzoffset = 18000000;
-        let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().replace("T", " ").replace("Z", "");
-        localISOTime = localISOTime.substr(0, localISOTime.length - 4);
+        let localISOTime = Utils.geraDataNow();
 
         if (mongoInsertion.insertedId && SensorController.atualizacaoDataSensor(macSensor, localISOTime))
             return {
@@ -98,6 +100,42 @@ class DadosMedicoesController {
         const dadosMedicoes: any[] = await DadosMedicao.find(filter).sort({dataEnvio: 1});
 
         return dadosMedicoes;
+    }
+
+    static verificaNotificacaoSmartphones(macSensor: string) {
+        // Vou fazer uma busca do consumo do mês
+        const dataMin = Utils.primeiroDiaMesCorrente() + " 00:00:00";
+        const dataMax = Utils.ultimoDiaMesCorrente() + "23:59:59";
+
+        DadosMedicoesController.listarMedicoes(dataMin, dataMax, macSensor).then((res: any) => {
+            const dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(res);
+            const consumoTotal = DadosMedicoesController.somarTodasPotencias(dadosMedicoes);
+
+            if (consumoTotal > 0) {
+                SensorController.buscaSensores(undefined, macSensor).then((sensores: any) => {
+                    if (sensores.length > 0) {
+                        const sensor = sensores[0];
+
+                        if (Utils.isStrValid(sensor.limiteAlerta)) {
+                            if (parseFloat(sensor.limiteAlerta) > consumoTotal) {
+                                // if (consumoTotal > parseFloat(sensor.limiteAlerta)) {
+                                console.debug("Enviando alertas para os smartphones...");
+                                NotificationController.buscaTokens(sensor.idCliente).then((tokens: any) => {
+                                    for (let tokenBusca of tokens) {
+                                        const notificationTitle = `ALERTA!`;
+                                        const notificationBody = `Atenção, o seu consumo ultrapassou o limite de ${sensor.limiteAlerta}kw/h.\nEsse mês você já consumiu o equivalente à ${consumoTotal.toFixed(2)}kw/h!`;
+                                        if (tokenBusca.token != null)
+                                            NotificationController.enviarNotificacao(tokenBusca.token, notificationTitle, notificationBody);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        console.log('datas', dataMin, dataMax);
     }
 
     static somarTodasPotencias(dadosMedicoes: any): number {

@@ -6,5 +6,6 @@ export const Sensores = new Schema({
     apelido: String,
     macSensor: String,
     key: String,
-    ultimaComunicacao: String
+    ultimaComunicacao: String,
+    limiteAlerta: String
 });

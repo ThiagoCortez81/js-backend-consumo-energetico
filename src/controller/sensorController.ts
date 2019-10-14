@@ -2,6 +2,7 @@ import {Utils} from "../routes/utils";
 import * as mongoModels from '../models/mongo/index'
 import * as mongoose from "mongoose";
 import {mongo} from "mongoose";
+import {id} from "apicache";
 
 export class SensorController {
     public async listarSensoresCliente(req: any, res: any) {
@@ -36,11 +37,31 @@ export class SensorController {
         res.send(response);
     }
 
-    static async buscaSensores(idCliente: string) {
-        let Sensores = mongoose.model('Sensores', mongoModels.Sensores);
-        const sensor = {
-            idCliente: idCliente
+    public async alterarSensorLimite(req: any, res: any) {
+        let response = {
+            isAuthenticated: true,
+            success: false
         };
+
+        if (Utils.listTest(req.user.usuario)) {
+            const sensor = req.body.sensor;
+
+            response.success = await SensorController.atualizaLimiteSensor(sensor._id, sensor.limiteAlerta);
+        }
+
+
+        res.send(response);
+    }
+
+    static async buscaSensores(idCliente?: string, macSensor?: string) {
+        let Sensores = mongoose.model('Sensores', mongoModels.Sensores);
+        let sensor: any = {};
+        if (idCliente != null) {
+            sensor['idCliente'] = idCliente;
+        }
+        if (macSensor != null) {
+            sensor['macSensor'] = macSensor;
+        }
 
         return await Sensores.find(sensor);
     }
@@ -53,6 +74,20 @@ export class SensorController {
         if (sensor != null) {
             sensor.apelido = apelido;
 
+            await sensor.save();
+            success = true;
+        }
+
+        return success;
+    }
+
+    static async atualizaLimiteSensor(idSensor: string, limite: String) {
+        let success = false;
+
+        let Sensores = mongoose.model('Sensores', mongoModels.Sensores);
+        const sensor: any = await Sensores.findOne({_id: idSensor});
+        if (sensor != null) {
+            sensor.limiteAlerta = limite;
             await sensor.save();
             success = true;
         }

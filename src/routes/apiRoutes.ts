@@ -3,6 +3,7 @@ import userController from "../controller/userController";
 import sensorController from "../controller/sensorController";
 import {Utils} from "./utils";
 import dadosMedicoesController from "../controller/dadosMedicoesController";
+import notificationController from "../controller/notificationController";
 
 class ApiRoutes {
 
@@ -22,9 +23,13 @@ class ApiRoutes {
 
         this.router.post('/listarSensoresCliente', Utils.verifyJWT, sensorController.listarSensoresCliente);
         this.router.post('/alterarSensorApelido', Utils.verifyJWT, sensorController.alterarSensorApelido);
+        this.router.post('/alterarSensorLimite', Utils.verifyJWT, sensorController.alterarSensorLimite);
 
         // Listar consumo
         this.router.post('/listarConsumoSensor', Utils.verifyJWT, dadosMedicoesController.listarConsumoSensor);
+
+        // Notificacoes
+        this.router.post('/storeToken', Utils.verifyJWT, notificationController.storeToken);
     }
 }
 

@@ -49,5 +49,20 @@ export class Utils {
         });
     }
 
-    // static converteData
+    static geraDataNow(){
+        const tzoffset = 18000000; // UTC -3
+
+        let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().replace("T", " ").replace("Z", "");
+        return localISOTime.substr(0, localISOTime.length - 4);
+    }
+
+    static primeiroDiaMesCorrente() {
+        const date = new Date();
+        return new Date(date.getFullYear(), date.getMonth(), 1).toISOString().substr(0, 10);
+    }
+
+    static ultimoDiaMesCorrente() {
+        const date = new Date();
+        return new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().substr(0, 10);
+    }
 }
