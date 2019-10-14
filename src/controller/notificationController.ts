@@ -60,8 +60,12 @@ export class NotificationController {
             const mongoInsertion = await Tokens.collection.insertOne(tokens);
             return (Utils.isStrValid(mongoInsertion.insertedId.toString()));
         } catch (e) {
-            const tokenRes: any = await Tokens.findOne({"token": token});
+            let tokenRes: any = await Tokens.findOne({"token": token});
             tokenRes.idCliente = idCliente;
+            await tokenRes.save();
+
+            tokenRes = await Tokens.findOne({"idCliente": idCliente});
+            tokenRes.token = token;
             await tokenRes.save();
 
             return true;
