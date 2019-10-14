@@ -117,8 +117,8 @@ class DadosMedicoesController {
                         const sensor = sensores[0];
 
                         if (Utils.isStrValid(sensor.limiteAlerta)) {
-                            if (parseFloat(sensor.limiteAlerta) > consumoTotal) {
-                                // if (consumoTotal > parseFloat(sensor.limiteAlerta)) {
+                            // if (parseFloat(sensor.limiteAlerta) > consumoTotal) { // TODO: Remover (DEBUG MODE)
+                            if (consumoTotal > parseFloat(sensor.limiteAlerta)) {
                                 console.debug("Enviando alertas para os smartphones...");
                                 NotificationController.buscaTokens(sensor.idCliente).then((tokens: any) => {
                                     for (let tokenBusca of tokens) {
