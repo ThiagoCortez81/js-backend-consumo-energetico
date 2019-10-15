@@ -42,11 +42,6 @@ export class NotificationController {
             success: await NotificationController.salvaDadosToken(token, idCliente)
         };
         res.send(resposta);
-
-        /*let sensores = await SensorController.buscaSensores(idCliente);
-        sensores = sensores.map((sensor: any) => {
-            return sensor.macSensor;
-        });*/
     }
 
     static async salvaDadosToken(token: string, idCliente: string) {

@@ -36,12 +36,12 @@ export class Utils {
 
     static verifyJWT(req: any, res: any, next: any){
         const token = req.headers['x-access-token'];
-        if (!token) return res.status(401).send({ isAuthenticated: false, authenticationMessage: 'Token expirado, faça o login novamente!' });
+        if (!token) return res.status(200).send({ isAuthenticated: false, authenticationMessage: 'Token expirado, faça o login novamente!' });
 
         const secret = process.env.SECRET || "";
 
         jwt.verify(token, secret, function(err: any, decoded: any) {
-            if (err) return res.status(500).send({ isAuthenticated: false, authenticationMessage: 'Token expirado, faça o login novamente!' });
+            if (err) return res.status(200).send({ isAuthenticated: false, authenticationMessage: 'Token expirado, faça o login novamente!' });
 
             // se tudo estiver ok, salva no request para uso posterior
             req.user = decoded;

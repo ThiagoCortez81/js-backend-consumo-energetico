@@ -30,6 +30,8 @@ class ApiRoutes {
 
         // Notificacoes
         this.router.post('/storeToken', Utils.verifyJWT, notificationController.storeToken);
+
+        // Salvar sensor para cliente
     }
 }
 
