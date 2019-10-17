@@ -26,7 +26,8 @@ class UserController {
                     expiresIn: 60 * 60 // 1 Hora
                 });
 
-            delete response.usuario._id;
+            if (response.usuario)
+                delete response.usuario._id;
         } else {
             response = UserController.geraRespostaCompleta(false, 'Preencha todos os campos!');
         }
