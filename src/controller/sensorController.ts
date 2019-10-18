@@ -1,8 +1,7 @@
 import {Utils} from "../routes/utils";
 import * as mongoModels from '../models/mongo/index'
 import * as mongoose from "mongoose";
-import {mongo} from "mongoose";
-import {id} from "apicache";
+import {DadosMedicoesController} from "./dadosMedicoesController";
 
 export class SensorController {
     public async listarSensoresCliente(req: any, res: any) {
@@ -13,8 +12,7 @@ export class SensorController {
 
         if (Utils.listTest(req.user.usuario)) {
             const idUsuario = req.user.usuario._id;
-
-            response.sensores = await SensorController.buscaSensores(idUsuario);
+            response.sensores = await (await SensorController.buscaSensores(idUsuario));
         }
 
 
@@ -63,7 +61,25 @@ export class SensorController {
             sensor['macSensor'] = macSensor;
         }
 
-        return await Sensores.find(sensor);
+        let idx = 0;
+        let sensoresDB: any = await Sensores.find(sensor);
+        let sensores = [];
+
+        for (let s of sensoresDB) {
+            const sensor = {
+                apelido: s.apelido,
+                consumo: await DadosMedicoesController.verificaConsumoSmartphones(s.macSensor),
+                idCliente: s.idCliente,
+                key: s.key,
+                limiteAlerta: s.limiteAlerta,
+                macSensor: s.macSensor,
+                ultimaComunicacao: s.ultimaComunicacao,
+                _id: s._id
+            };
+            sensores.push(sensor);
+        }
+
+        return sensores;
     }
 
     static async atualizaApelidoSensor(idSensor: string, apelido: String) {

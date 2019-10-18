@@ -6,7 +6,7 @@ import {BodyFiltroConsumo} from "../models";
 import {SensorController} from "./sensorController";
 import {NotificationController} from "./notificationController";
 
-class DadosMedicoesController {
+export class DadosMedicoesController {
     public async cadastrarDadosMedicao(req: any, res: any) {
         let response: {};
 
@@ -105,7 +105,7 @@ class DadosMedicoesController {
     static verificaNotificacaoSmartphones(macSensor: string) {
         // Vou fazer uma busca do consumo do mês
         const dataMin = Utils.primeiroDiaMesCorrente() + " 00:00:00";
-        const dataMax = Utils.ultimoDiaMesCorrente() + "23:59:59";
+        const dataMax = Utils.ultimoDiaMesCorrente() + " 23:59:59";
 
         DadosMedicoesController.listarMedicoes(dataMin, dataMax, macSensor).then((res: any) => {
             const dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(res);
@@ -136,6 +136,16 @@ class DadosMedicoesController {
         });
 
         console.log('datas', dataMin, dataMax);
+    }
+
+    static async verificaConsumoSmartphones(macSensor: string) {
+        // Vou fazer uma busca do consumo do mês
+        const dataMin = Utils.primeiroDiaMesCorrente() + " 00:00:00";
+        const dataMax = Utils.ultimoDiaMesCorrente() + " 23:59:59";
+
+        let res = await DadosMedicoesController.listarMedicoes(dataMin, dataMax, macSensor);
+        const dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(res);
+        return DadosMedicoesController.somarTodasPotencias(dadosMedicoes);
     }
 
     static somarTodasPotencias(dadosMedicoes: any): number {
