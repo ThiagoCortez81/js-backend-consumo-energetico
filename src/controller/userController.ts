@@ -2,6 +2,7 @@ import {Utils} from "../routes/utils";
 import * as mongoModels from '../models/mongo/index'
 import * as mongoose from "mongoose";
 import * as jwt from "jsonwebtoken";
+import * as request from "request";
 
 const SECRET = process.env.SECRET || "sleocgrient";
 
@@ -73,6 +74,40 @@ class UserController {
         }
 
         res.send(response);
+    }
+
+    public async synchronizeMediumPrice(req: any, res: any) {
+        const url = 'http://www.aneel.gov.br/dados/relatorios?p_p_id=dadosabertos_WAR_dadosabertosportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=gerarTarifaFornecimentoResidencialJSON&p_p_cacheability=cacheLevelPage&p_p_col_id=column-2&p_p_col_count=1';
+
+        console.log(url);
+
+        request.get({
+            url: url,
+            json: true,
+            headers: {'User-Agent': 'request'}
+        }, async (err, resp, data) => {
+            if (err) {
+                console.log('Error:', err);
+            } else if (resp.statusCode !== 200) {
+                console.log('Status:', resp.statusCode);
+            } else {
+                // data is already parsed as JSON:
+                let valorTotal = 0;
+                const valoresTarifaConvencional = data.map((row: any) => {
+                    const tarifa = parseFloat(row.vlrTotaTRFConvencional);
+                    valorTotal += tarifa;
+                    return tarifa;
+                });
+
+                let ValorKW = mongoose.model('KWValoresMedios', mongoModels.KWValoresMedios);
+                const valorKW = new ValorKW({
+                    dataSync: new Date().toISOString().replace("T", " ").replace("Z", ""),
+                    valorMedio: valorTotal / valoresTarifaConvencional.length
+                });
+                await ValorKW.collection.insertOne(valorKW);
+                res.send({res: "Salvo!"});
+            }
+        });
     }
 
     static async buscaDadosUsuario(email: String, senha: String) {

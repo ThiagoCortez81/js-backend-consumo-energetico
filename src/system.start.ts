@@ -7,6 +7,7 @@ import sensorRoutes from './routes/sensorRoutes';
 import {Mongoose} from "mongoose";
 import config from "../config.json";
 import {MongoClient} from "./database.start";
+import internalRoutes from "./routes/internalRoutes";
 
 class Server {
 
@@ -36,8 +37,8 @@ class Server {
 
     routes(): void {
         this.app.use('/appsensor', sensorRoutes);
-
         this.app.use('/api', apiRoutes);
+        this.app.use('/internal', internalRoutes);
     }
 
     start(): void {
