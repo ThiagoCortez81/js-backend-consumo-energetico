@@ -127,7 +127,7 @@ export class DadosMedicoesController {
                                     NotificationController.buscaTokens(sensor.idCliente).then((tokens: any) => {
                                         for (let tokenBusca of tokens) {
                                             const notificationTitle = `ALERTA!`;
-                                            const notificationBody = `Atenção, o seu consumo ultrapassou o limite de R$ ${sensor.limiteAlerta.toFixed(2).toString().replace('.', ',')}. Esse mês você já consumiu o equivalente à R$ ${valorFinalKW.toFixed(2).toString().replace('.', ',')}!`;
+                                            const notificationBody = `Atenção, o seu consumo ultrapassou o limite de R$ ${parseFloat(sensor.limiteAlerta).toFixed(2).toString().replace('.', ',')}. Esse mês você já consumiu o equivalente à R$ ${valorFinalKW.toFixed(2).toString().replace('.', ',')}!`;
                                             if (tokenBusca.token != null)
                                                 NotificationController.enviarNotificacao(tokenBusca.token, notificationTitle, notificationBody);
                                         }
