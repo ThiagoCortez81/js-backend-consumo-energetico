@@ -5,6 +5,7 @@ import {mongo} from "mongoose";
 import {BodyFiltroConsumo} from "../models";
 import {SensorController} from "./sensorController";
 import {NotificationController} from "./notificationController";
+import {KWController} from "./KWController";
 
 export class DadosMedicoesController {
     public async cadastrarDadosMedicao(req: any, res: any) {
@@ -103,6 +104,7 @@ export class DadosMedicoesController {
     }
 
     static verificaNotificacaoSmartphones(macSensor: string) {
+        // TODO AJUSTAR PARA VALOR EM REAIS
         // Vou fazer uma busca do consumo do mês
         const dataMin = Utils.primeiroDiaMesCorrente() + " 00:00:00";
         const dataMax = Utils.ultimoDiaMesCorrente() + " 23:59:59";
@@ -110,29 +112,32 @@ export class DadosMedicoesController {
         DadosMedicoesController.listarMedicoes(dataMin, dataMax, macSensor).then((res: any) => {
             const dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(res);
             const consumoTotal = DadosMedicoesController.somarTodasPotencias(dadosMedicoes);
+            KWController.retornaPrecoMedio().then((preco: any) => {
+                const valorFinalKW = consumoTotal * preco;
 
-            if (consumoTotal > 0) {
-                SensorController.buscaSensores(undefined, macSensor).then((sensores: any) => {
-                    if (sensores.length > 0) {
-                        const sensor = sensores[0];
+                if (consumoTotal > 0) {
+                    SensorController.buscaSensores(undefined, macSensor).then((sensores: any) => {
+                        if (sensores.length > 0) {
+                            const sensor = sensores[0];
 
-                        if (Utils.isStrValid(sensor.limiteAlerta)) {
-                            // if (parseFloat(sensor.limiteAlerta) > consumoTotal) { // TODO: Remover (DEBUG MODE)
-                            if (consumoTotal > parseFloat(sensor.limiteAlerta)) {
-                                console.debug("Enviando alertas para os smartphones...");
-                                NotificationController.buscaTokens(sensor.idCliente).then((tokens: any) => {
-                                    for (let tokenBusca of tokens) {
-                                        const notificationTitle = `ALERTA!`;
-                                        const notificationBody = `Atenção, o seu consumo ultrapassou o limite de ${sensor.limiteAlerta}kw/h.\nEsse mês você já consumiu o equivalente à ${consumoTotal.toFixed(2)}kw/h!`;
-                                        if (tokenBusca.token != null)
-                                            NotificationController.enviarNotificacao(tokenBusca.token, notificationTitle, notificationBody);
-                                    }
-                                });
+                            if (Utils.isStrValid(sensor.limiteAlerta)) {
+                                // if (parseFloat(sensor.limiteAlerta) > consumoTotal) { // TODO: Remover (DEBUG MODE)
+                                if (valorFinalKW > parseFloat(sensor.limiteAlerta)) {
+                                    console.debug("Enviando alertas para os smartphones...");
+                                    NotificationController.buscaTokens(sensor.idCliente).then((tokens: any) => {
+                                        for (let tokenBusca of tokens) {
+                                            const notificationTitle = `ALERTA!`;
+                                            const notificationBody = `Atenção, o seu consumo ultrapassou o limite de R$ ${sensor.limiteAlerta.toFixed(2).toString().replace('.', ',')}. Esse mês você já consumiu o equivalente à R$ ${valorFinalKW.toFixed(2).toString().replace('.', ',')}!`;
+                                            if (tokenBusca.token != null)
+                                                NotificationController.enviarNotificacao(tokenBusca.token, notificationTitle, notificationBody);
+                                        }
+                                    });
+                                }
                             }
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
 
         console.log('datas', dataMin, dataMax);

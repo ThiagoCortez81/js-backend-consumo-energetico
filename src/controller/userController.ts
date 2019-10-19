@@ -3,6 +3,7 @@ import * as mongoModels from '../models/mongo/index'
 import * as mongoose from "mongoose";
 import * as jwt from "jsonwebtoken";
 import * as request from "request";
+import {KWController} from "./KWController";
 
 const SECRET = process.env.SECRET || "sleocgrient";
 
@@ -22,10 +23,13 @@ class UserController {
             senha = Utils.encryptPassword(senha);
             // Faço busca no banco
             response = await UserController.buscaDadosUsuario(email, senha);
-            if (response.success)
+            if (response.success) {
                 response['token'] = jwt.sign({"usuario": response.usuario}, SECRET, {
                     expiresIn: 60 * 60 // 1 Hora
                 });
+
+                response['valorKW'] = await KWController.retornaPrecoMedio();
+            }
 
             if (response.usuario)
                 delete response.usuario._id;
@@ -79,8 +83,6 @@ class UserController {
     public async synchronizeMediumPrice(req: any, res: any) {
         const url = 'http://www.aneel.gov.br/dados/relatorios?p_p_id=dadosabertos_WAR_dadosabertosportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=gerarTarifaFornecimentoResidencialJSON&p_p_cacheability=cacheLevelPage&p_p_col_id=column-2&p_p_col_count=1';
 
-        console.log(url);
-
         request.get({
             url: url,
             json: true,
@@ -88,23 +90,20 @@ class UserController {
         }, async (err, resp, data) => {
             if (err) {
                 console.log('Error:', err);
+                res.status(500).send({res: 'Erro!'});
             } else if (resp.statusCode !== 200) {
-                console.log('Status:', resp.statusCode);
+                res.status(500).send({res: 'Erro!'});
             } else {
-                // data is already parsed as JSON:
                 let valorTotal = 0;
-                const valoresTarifaConvencional = data.map((row: any) => {
+                const valoresTarifaConvencional = data.filter((row: any) => {
+                    return row.dthInicioVigencia.includes(new Date().getFullYear());
+                }).map((row: any) => {
                     const tarifa = parseFloat(row.vlrTotaTRFConvencional);
                     valorTotal += tarifa;
                     return tarifa;
                 });
 
-                let ValorKW = mongoose.model('KWValoresMedios', mongoModels.KWValoresMedios);
-                const valorKW = new ValorKW({
-                    dataSync: new Date().toISOString().replace("T", " ").replace("Z", ""),
-                    valorMedio: valorTotal / valoresTarifaConvencional.length
-                });
-                await ValorKW.collection.insertOne(valorKW);
+                await KWController.cadastraPrecoMedio(valorTotal, valoresTarifaConvencional);
                 res.send({res: "Salvo!"});
             }
         });

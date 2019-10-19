@@ -37,11 +37,14 @@ export class NotificationController {
         const idCliente = req.user.usuario._id;
         const token = req.body.token;
 
-        let resposta;
-        resposta = {
-            success: await NotificationController.salvaDadosToken(token, idCliente)
-        };
-        res.send(resposta);
+        if (token != "") {
+            let resposta;
+            resposta = {
+                success: await NotificationController.salvaDadosToken(token, idCliente)
+            };
+            res.send(resposta);
+        }
+        res.send({});
     }
 
     static async salvaDadosToken(token: string, idCliente: string) {
@@ -52,7 +55,7 @@ export class NotificationController {
         });
 
         try {
-            const mongoInsertion = await Tokens.collection.insertOne(tokens);
+            const mongoInsertion:any = await Tokens.collection.insertOne(tokens);
             return (Utils.isStrValid(mongoInsertion.insertedId.toString()));
         } catch (e) {
             let tokenRes: any = await Tokens.findOne({"token": token});
