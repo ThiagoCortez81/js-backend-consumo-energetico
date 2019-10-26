@@ -24,6 +24,7 @@ class ApiRoutes {
         this.router.post('/listarSensoresCliente', Utils.verifyJWT, sensorController.listarSensoresCliente);
         this.router.post('/alterarSensorApelido', Utils.verifyJWT, sensorController.alterarSensorApelido);
         this.router.post('/alterarSensorLimite', Utils.verifyJWT, sensorController.alterarSensorLimite);
+        this.router.post('/alterarSensorLimitePico', Utils.verifyJWT, sensorController.alterarSensorLimitePico);
 
         // Listar consumo
         this.router.post('/listarConsumoSensor', Utils.verifyJWT, dadosMedicoesController.listarConsumoSensor);

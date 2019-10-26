@@ -71,6 +71,7 @@ export class DadosMedicoesController {
         if (mongoInsertion.insertedId && SensorController.atualizacaoDataSensor(macSensor, localISOTime))
             return {
                 id: mongoInsertion.insertedId,
+                kwPico: await SensorController.retornaLimiteSensorPico(macSensor),
                 success: true,
                 isAuthenticated: true
             };

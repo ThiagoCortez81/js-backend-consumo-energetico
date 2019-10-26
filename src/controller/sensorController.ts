@@ -51,6 +51,24 @@ export class SensorController {
         res.send(response);
     }
 
+    public async alterarSensorLimitePico(req: any, res: any) {
+        let response = {
+            isAuthenticated: true,
+            success: false
+        };
+
+        if (Utils.listTest(req.user.usuario)) {
+            const sensor = req.body.sensor;
+
+            console.log(sensor)
+
+            response.success = await SensorController.atualizaLimiteSensorPico(sensor._id, sensor.kwAlerta);
+        }
+
+
+        res.send(response);
+    }
+
     static async buscaSensores(idCliente?: string, macSensor?: string) {
         let Sensores = mongoose.model('Sensores', mongoModels.Sensores);
         let sensor: any = {};
@@ -72,6 +90,7 @@ export class SensorController {
                 idCliente: s.idCliente,
                 key: s.key,
                 limiteAlerta: s.limiteAlerta,
+                kwAlerta: s.kwAlerta,
                 macSensor: s.macSensor,
                 ultimaComunicacao: s.ultimaComunicacao,
                 _id: s._id
@@ -109,6 +128,32 @@ export class SensorController {
         }
 
         return success;
+    }
+
+    static async atualizaLimiteSensorPico(idSensor: string, limite: String) {
+        let success = false;
+
+        let Sensores = mongoose.model('Sensores', mongoModels.Sensores);
+        const sensor: any = await Sensores.findOne({_id: idSensor});
+        if (sensor != null) {
+            sensor.kwAlerta = limite;
+            await sensor.save();
+            success = true;
+        }
+
+        return success;
+    }
+
+    static async retornaLimiteSensorPico(macSensor: string) {
+        let kwAlerta = -1;
+
+        let Sensores = mongoose.model('Sensores', mongoModels.Sensores);
+        const sensor: any = await Sensores.findOne({macSensor: macSensor});
+        if (sensor != null) {
+            kwAlerta = parseFloat(sensor.kwAlerta);
+        }
+
+        return kwAlerta;
     }
 
     public static async atualizacaoDataSensor(macSensor: string, ultimaComunicacao: string) {
