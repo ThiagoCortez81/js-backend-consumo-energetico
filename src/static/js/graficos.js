@@ -24,7 +24,7 @@ function montaGrafico() {
             cylfillcolor: "#6eabf0",
             plottooltext: "Monitoramento do Nível de Água</b>",
             cylfillhoveralpha: "85",
-            // refreshInterval: "1",
+            refreshInterval: "10",
             // refreshInstantly: "1",
             dataStreamUrl: 'http://cortezit.me:3000/litros',
             theme: "umber",
