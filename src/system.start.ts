@@ -13,7 +13,7 @@ class Server {
 
     public app: Application;
     public mongoUrl = config.databaseConf.mongo.host;
-    private static  _front_root_path = './static';
+    private static  _front_root_path = '../src/static';
 
     constructor() {
         this.app = express();
