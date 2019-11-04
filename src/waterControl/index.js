@@ -135,6 +135,8 @@ async function retornaUltimaPorcentagem(){
 async function retornaUltimoStatusValvula(){
     let dados = mongoose.model('dados2', schemaValvula);
     let data = await dados.find({}).sort({'date': -1}).limit(1);
+    if (data[0] == null)
+        return 0;
     return data[0].valor;
 }
 
