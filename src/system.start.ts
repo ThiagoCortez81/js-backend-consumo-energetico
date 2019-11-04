@@ -13,6 +13,7 @@ class Server {
 
     public app: Application;
     public mongoUrl = config.databaseConf.mongo.host;
+    private static  _front_root_path = './static';
 
     constructor() {
         this.app = express();
@@ -39,6 +40,12 @@ class Server {
         this.app.use('/appsensor', sensorRoutes);
         this.app.use('/api', apiRoutes);
         this.app.use('/internal', internalRoutes);
+
+        // Rotas para o frontend (flavio)
+        this.app.get('*.*', express.static(Server._front_root_path, {maxAge: '1y'}));
+        this.app.all('*', function (req: any, res: any) {
+            res.status(200).sendFile(`/`, {root: Server._front_root_path});
+        });
     }
 
     start(): void {
