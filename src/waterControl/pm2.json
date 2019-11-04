@@ -1,0 +1,14 @@
+{
+  apps: [
+    {
+      name: "server-controle-agua",
+      script: "index.js",
+      node_args: "--max_old_space_size=512",
+      max_memory_restart: "512M",
+      env: {
+        AMBIENTE: "prod",
+        SECRET: "sleocgrient"
+      }
+    }
+  ]
+}
