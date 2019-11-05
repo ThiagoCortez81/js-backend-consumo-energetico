@@ -50,12 +50,15 @@ export class DadosMedicoesController {
             dadosMedicoes: {}
         };
 
-        if (body.diasParaBuscar == 0)
+        if (body.diasParaBuscar == 0) {
             response.dadosMedicoes = dadosMedicoes;
-        else
-            response.dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(dadosMedicoes);
+            response.consumoTotal = DadosMedicoesController.somarTodasPotenciasRT(response.dadosMedicoes);
 
-        response.consumoTotal = DadosMedicoesController.somarTodasPotencias(response.dadosMedicoes);
+        } else {
+            response.dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(dadosMedicoes);
+            response.consumoTotal = DadosMedicoesController.somarTodasPotencias(response.dadosMedicoes);
+        }
+
         res.send(response);
     }
 
@@ -156,6 +159,17 @@ export class DadosMedicoesController {
         let res = await DadosMedicoesController.listarMedicoes(dataMin, dataMax, macSensor);
         const dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(res);
         return DadosMedicoesController.somarTodasPotencias(dadosMedicoes);
+    }
+
+    static somarTodasPotenciasRT(dadosMedicoes: any): number {
+        let potenciaTotal = 0;
+        const keys = Object.keys(dadosMedicoes);
+
+        for (let key of keys) {
+            potenciaTotal += dadosMedicoes[key].potencia;
+        }
+
+        return potenciaTotal;
     }
 
     static somarTodasPotencias(dadosMedicoes: any): number {
