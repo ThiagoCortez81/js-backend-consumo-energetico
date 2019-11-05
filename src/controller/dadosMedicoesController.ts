@@ -50,7 +50,11 @@ export class DadosMedicoesController {
             dadosMedicoes: {}
         };
 
-        response.dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(dadosMedicoes);
+        if (body.diasParaBuscar == 0)
+            response.dadosMedicoes = dadosMedicoes;
+        else
+            response.dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(dadosMedicoes);
+
         response.consumoTotal = DadosMedicoesController.somarTodasPotencias(response.dadosMedicoes);
         res.send(response);
     }
