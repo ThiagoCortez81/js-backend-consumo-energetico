@@ -19,8 +19,7 @@ mongoose.connect(`mongodb://${config.databaseConf.mongo.host}/${config.databaseC
     useNewUrlParser: true,
     useUnifiedTopology: true,
     "user": "admin",
-    "pass": "abc123",
-    "useMongoClient": true
+    "pass": "abc123"
 });
 
  mongoose.connection.on('connected', function(){

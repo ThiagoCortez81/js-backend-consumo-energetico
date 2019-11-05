@@ -7,8 +7,7 @@ export class MongoClient {
     static mongoConnection: Mongoose = mongoose.connect(`mongodb://${config.databaseConf.mongo.host}/${config.databaseConf.mongo.database}`, {
         useNewUrlParser: true,
         "user": "admin",
-        "pass": "abc123",
-        "useMongoClient": true
+        "pass": "abc123"
     });
 }
 
