@@ -8,5 +8,6 @@ export class BodyFiltroConsumo {
         this.dataMin = "";
         this.dataMax = "";
         this.macSensor = "";
+        this.diasParaBuscar = -1;
     }
 }
