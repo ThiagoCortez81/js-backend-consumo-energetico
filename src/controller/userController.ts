@@ -95,15 +95,18 @@ class UserController {
                 res.status(500).send({res: 'Erro!'});
             } else {
                 let valorTotal = 0;
-                const valoresTarifaConvencional = data.filter((row: any) => {
+                console.log('data', data);
+                console.log('resp', resp);
+
+                let valoresTarifaConvencional = data.filter((row: any) => {
                     return row.dthInicioVigencia.includes(new Date().getFullYear());
                 }).map((row: any) => {
                     const tarifa = parseFloat(row.vlrTotaTRFConvencional);
+                    console.log('tarifa', tarifa);
                     valorTotal += tarifa;
                     return tarifa;
                 });
-
-                console.log('valoresTarifaConvencional', valoresTarifaConvencional);
+                valoresTarifaConvencional = 0.9;
 
                 await KWController.cadastraPrecoMedio(valorTotal, valoresTarifaConvencional);
                 res.send({res: "Salvo!"});
