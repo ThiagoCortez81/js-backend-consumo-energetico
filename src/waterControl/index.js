@@ -18,6 +18,7 @@ var client = mqtt.connect('mqtt://soldier.cloudmqtt.com', {
 mongoose.connect(`mongodb://${config.databaseConf.mongo.host}/${config.databaseConf.mongo.database}`,{
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    "auth": { "authSource": "admin" },
     "user": "admin",
     "pass": "abc123"
 });
