@@ -25,7 +25,7 @@ class UserController {
             response = await UserController.buscaDadosUsuario(email, senha);
             if (response.success) {
                 response['token'] = jwt.sign({"usuario": response.usuario}, SECRET, {
-                    expiresIn: 60 * 60 // 1 Hora
+                    expiresIn: 60 * 150 // 1 Hora
                 });
 
                 response['valorKW'] = await KWController.retornaPrecoMedio();
