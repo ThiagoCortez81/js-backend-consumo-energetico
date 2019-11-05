@@ -103,6 +103,8 @@ class UserController {
                     return tarifa;
                 });
 
+                console.log('valoresTarifaConvencional', valoresTarifaConvencional);
+
                 await KWController.cadastraPrecoMedio(valorTotal, valoresTarifaConvencional);
                 res.send({res: "Salvo!"});
             }
