@@ -53,7 +53,6 @@ export class DadosMedicoesController {
         if (body.diasParaBuscar == 0) {
             response.dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoRT(dadosMedicoes);
             response.consumoTotal = DadosMedicoesController.somarTodasPotenciasRT(response.dadosMedicoes);
-
         } else {
             response.dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoDia(dadosMedicoes);
             response.consumoTotal = DadosMedicoesController.somarTodasPotencias(response.dadosMedicoes);
@@ -166,7 +165,7 @@ export class DadosMedicoesController {
         const keys = Object.keys(dadosMedicoes);
 
         for (let key of keys) {
-            potenciaTotal += dadosMedicoes[key].potencia;
+            potenciaTotal += dadosMedicoes[key];
         }
 
         return potenciaTotal;
@@ -191,7 +190,7 @@ export class DadosMedicoesController {
             if (Object.keys(localDadosMedicao).indexOf(keyDay) == -1)
                 localDadosMedicao[keyDay] = 0;
 
-            localDadosMedicao[keyDay] += dadoMedicao;
+            localDadosMedicao[keyDay] += dadoMedicao.potencia;
         }
 
         return localDadosMedicao;
