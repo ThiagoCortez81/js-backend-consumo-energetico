@@ -51,7 +51,7 @@ export class DadosMedicoesController {
         };
 
         if (body.diasParaBuscar == 0) {
-            response.dadosMedicoes = dadosMedicoes;
+            response.dadosMedicoes = DadosMedicoesController.agruparDadosMedicaoRT(dadosMedicoes);
             response.consumoTotal = DadosMedicoesController.somarTodasPotenciasRT(response.dadosMedicoes);
 
         } else {
@@ -188,6 +188,20 @@ export class DadosMedicoesController {
 
         for (let dadoMedicao of dadosMedicoes) {
             const keyDay = dadoMedicao.dataEnvio.substring(0, 10);
+            if (Object.keys(localDadosMedicao).indexOf(keyDay) == -1)
+                localDadosMedicao[keyDay] = 0;
+
+            localDadosMedicao[keyDay] += dadoMedicao;
+        }
+
+        return localDadosMedicao;
+    }
+
+    static agruparDadosMedicaoRT(dadosMedicoes: any[]) {
+        let localDadosMedicao: any = {};
+
+        for (let dadoMedicao of dadosMedicoes) {
+            const keyDay = dadoMedicao.dataEnvio.substring(0, 19).replace('T', ' ');
             if (Object.keys(localDadosMedicao).indexOf(keyDay) == -1)
                 localDadosMedicao[keyDay] = 0;
 
