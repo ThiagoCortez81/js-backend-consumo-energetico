@@ -15,7 +15,7 @@ var client = mqtt.connect('mqtt://soldier.cloudmqtt.com', {
     port: 12689
 });
 
-mongoose.connect(`mongodb://${config.databaseConf.mongo.host}/${config.databaseConf.mongo.database}`,{
+mongoose.connect(`mongodb://admin:abc123@${config.databaseConf.mongo.host}/${config.databaseConf.mongo.database}`,{
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
