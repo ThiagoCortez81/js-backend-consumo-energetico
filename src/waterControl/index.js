@@ -124,11 +124,11 @@ client.on('message', function (topic, message) {
         let body = '';
         if (porcentagem <= 0.4) {
             body = 'Nível abaixo do mínimo de segurança. Verifique imediatamente.';
+            enviarNotificacao(title, body);
         } else if (porcentagem >= 0.8) {
             body = 'Nível acima do máximo de segurança. Verifique imediatamente.';
+            enviarNotificacao(title, body);
         }
-
-        enviarNotificacao(title, body);
     }
 
 });
@@ -172,7 +172,7 @@ async function enviarNotificacao(title, body) {
     const token_array = await buscaTodosTokens();
 
     for (let i = 0; i < token_array.length; i++) {
-        const token = token_array[i];
+        const token = token_array[i].token;
         const message = {
             to: token,
             notification: {
