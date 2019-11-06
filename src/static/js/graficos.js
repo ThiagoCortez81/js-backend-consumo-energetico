@@ -52,7 +52,7 @@ function montaGrafico() {
           chart: {
             caption: "Monitoramento do Nível de Água",
             lowerlimit: "0",
-            upperlimit: "1",
+            upperlimit: "100",
             showvalue: "1",
             numbersuffix: "%",
             theme: "umber",
@@ -71,27 +71,27 @@ function montaGrafico() {
             color: [
               {
                 minvalue: "0",
-                maxvalue: "0.40",
+                maxvalue: "40",
                 code: "#F2726F"
               },
               {
-                minvalue: "0.40",
-                maxvalue: "0.50",
+                minvalue: "40",
+                maxvalue: "50",
                 code: "#FFC533"
               },
               {
-                minvalue: "0.50",
-                maxvalue: "0.70",
+                minvalue: "50",
+                maxvalue: "70",
                 code: "#62B58F"
               },
               {
-                  minvalue: "0.70",
-                  maxvalue: "0.80",
+                  minvalue: "70",
+                  maxvalue: "80",
                   code: "#FFC533"
               },
               {
-                minvalue: "0.80",
-                maxvalue: "1",
+                minvalue: "80",
+                maxvalue: "100",
                 code: "#F2726F"
               }
             ]

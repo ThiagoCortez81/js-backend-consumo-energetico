@@ -109,6 +109,7 @@ client.on('message', function (topic, message) {
         let porcentagem = ((tamanhoCaixa - message) / tamanhoCaixa);
         let litros = porcentagem * capacidadeCaixa;
         let dados = mongoose.model('dados', schemaNivel);
+        porcentagem *= 100;
         const dado = new dados({
             topic: "ultraIMM/Nivel",
             litros: litros,
@@ -123,10 +124,10 @@ client.on('message', function (topic, message) {
         let title = 'Alerta!';
         let body = '';
         if (porcentagem <= 0.4) {
-            body = `Nível abaixo do mínimo de segurança: ${(porcentagem * 100).toFixed(2)}%. Verifique imediatamente.`;
+            body = `Nível abaixo do mínimo de segurança: ${(porcentagem).toFixed(2)}%. Verifique imediatamente.`;
             enviarNotificacao(title, body);
         } else if (porcentagem >= 0.8) {
-            body = `Nível acima do máximo de segurança: ${(porcentagem * 100).toFixed(2)}%. Verifique imediatamente.`;
+            body = `Nível acima do máximo de segurança: ${(porcentagem).toFixed(2)}%. Verifique imediatamente.`;
             enviarNotificacao(title, body);
         }
     }
