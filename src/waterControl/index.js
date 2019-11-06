@@ -1,5 +1,4 @@
 // Conexões ao MQTT e ao MongoDB
-const fcm = require('fcm-node');
 const mqtt = require('mqtt');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -8,6 +7,11 @@ const bodyParser = require('body-parser');
 const Schema = mongoose.Schema;
 const app = new express();
 const config = require('../../config.json');
+
+const FCM = require('fcm-node');
+import * as serverKey from '../../consumo-energ-169a4-firebase-adminsdk-95yad-37480a86a6.json'
+
+const fcm = new FCM(serverKey);
 
 ////////////////////////////////////////////// CONEXÃO AO BROKER E AO MONGO
 var client = mqtt.connect('mqtt://soldier.cloudmqtt.com', {
