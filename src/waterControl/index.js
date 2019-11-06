@@ -123,10 +123,10 @@ client.on('message', function (topic, message) {
         let title = 'Alerta!';
         let body = '';
         if (porcentagem <= 0.4) {
-            body = 'Nível abaixo do mínimo de segurança. Verifique imediatamente.';
+            body = `Nível abaixo do mínimo de segurança: ${porcentagem * 10}%. Verifique imediatamente.`;
             enviarNotificacao(title, body);
         } else if (porcentagem >= 0.8) {
-            body = 'Nível acima do máximo de segurança. Verifique imediatamente.';
+            body = `Nível acima do máximo de segurança: ${porcentagem * 10}%. Verifique imediatamente.`;
             enviarNotificacao(title, body);
         }
     }
