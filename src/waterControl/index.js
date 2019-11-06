@@ -9,7 +9,7 @@ const app = new express();
 const config = require('../../config.json');
 
 const FCM = require('fcm-node');
-const serverKey = require('consumo-energ-169a4-firebase-adminsdk-95yad-37480a86a6.json');
+const serverKey = require('./consumo-energ-169a4-firebase-adminsdk-95yad-37480a86a6.json');
 
 const fcm = new FCM(serverKey);
 
