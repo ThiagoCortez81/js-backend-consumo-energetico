@@ -143,16 +143,16 @@ $(document).on('click', '#btnValvula', function(){
 });
 
 function alteraValorBotaoValvula(valor){
-  if(valor == 0){
+  if(valor == 1){
     $('#btnValvula').removeClass('btn-success');
     $('#btnValvula').addClass('btn-danger');
-    $('#btnValvula').val('1');
+    $('#btnValvula').val('0');
     $('#btnValvula').text('Desligar Válvula');
   }
-  if(valor == 1){
+  if(valor == 0){
     $('#btnValvula').removeClass('btn-danger');
     $('#btnValvula').addClass('btn-success');
-    $('#btnValvula').val('0');
+    $('#btnValvula').val('1');
     $('#btnValvula').text('Ligar Válvula');
   }
 }
