@@ -69,26 +69,26 @@ function montaGrafico() {
             color: [
               {
                 minvalue: "0",
-                maxvalue: "0.50",
+                maxvalue: "0.40",
                 code: "#F2726F"
               },
               {
-                minvalue: "0.50",
-                maxvalue: "0.60",
+                minvalue: "0.40",
+                maxvalue: "0.50",
                 code: "#FFC533"
               },
               {
-                minvalue: "0.60",
-                maxvalue: "0.80",
+                minvalue: "0.50",
+                maxvalue: "0.70",
                 code: "#62B58F"
               },
               {
-                  minvalue: "0.80",
-                  maxvalue: "0.90",
+                  minvalue: "0.70",
+                  maxvalue: "0.80",
                   code: "#FFC533"
               },
               {
-                minvalue: "0.90",
+                minvalue: "0.80",
                 maxvalue: "1",
                 code: "#F2726F"
               }
