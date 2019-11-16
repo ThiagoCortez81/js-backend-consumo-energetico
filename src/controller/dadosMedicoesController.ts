@@ -141,6 +141,9 @@ export class DadosMedicoesController {
 
                                                 console.log('ultimaNotificacao=> ', ultimaNotificacao);
                                             }
+
+                                            console.log('enviaNotificacao=> ', enviaNotificacao);
+
                                             tokenBusca.ultimaNotificacao = new Date().toISOString();
                                             tokenBusca.save();
 
