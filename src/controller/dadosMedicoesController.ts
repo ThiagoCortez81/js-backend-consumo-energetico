@@ -144,10 +144,10 @@ export class DadosMedicoesController {
 
                                             console.log('enviaNotificacao=> ', enviaNotificacao);
 
-                                            tokenBusca.ultimaNotificacao = new Date().toISOString();
-                                            tokenBusca.save();
-
                                             if (enviaNotificacao) {
+                                                tokenBusca.ultimaNotificacao = new Date().toISOString();
+                                                tokenBusca.save();
+
                                                 const notificationTitle = `ALERTA!`;
                                                 const notificationBody = `Atenção, o seu consumo ultrapassou o limite de R$ ${parseFloat(sensor.limiteAlerta).toFixed(2).toString().replace('.', ',')}. Esse mês você já consumiu o equivalente à R$ ${valorFinalKW.toFixed(2).toString().replace('.', ',')}!`;
                                                 if (tokenBusca.token != null)
