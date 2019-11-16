@@ -85,6 +85,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @ionic/angular */ "./node_modules/@ionic/angular/dist/fesm5.js");
 /* harmony import */ var _ionic_native_local_notifications_ngx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @ionic-native/local-notifications/ngx */ "./node_modules/@ionic-native/local-notifications/ngx/index.js");
 /* harmony import */ var _services_storage_storage_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../services/storage/storage.service */ "./src/app/services/storage/storage.service.ts");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+
 
 
 
@@ -131,6 +133,19 @@ let ModulosPage = class ModulosPage {
             });
             const loading = yield this._alertService.defaultLoading("Carregando...");
             this._ws.listarSensoresCliente().then(resp => resp.toPromise()).then((resposta) => {
+                if (resposta.isAuthenticated) {
+                    this.listSensores = resposta.sensores;
+                }
+                else {
+                    this._storageService.saveJWT(undefined).then((res) => {
+                        this._alertService.defaultAlert("Oops!", null, "Sua sessão expirou, faça o login novamente!", ["Vamos lá!"]);
+                        this._nav.navigate(['/']);
+                    });
+                }
+                loading.dismiss();
+            });
+            Object(rxjs__WEBPACK_IMPORTED_MODULE_11__["interval"])(10000)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["startWith"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["switchMap"])(() => this._ws.listarSensoresCliente().then(resp => resp.toPromise()))).subscribe((resposta) => {
                 if (resposta.isAuthenticated) {
                     this.listSensores = resposta.sensores;
                 }

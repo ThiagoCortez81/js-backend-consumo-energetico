@@ -88,6 +88,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @ionic/angular */ "./node_modules/@ionic/angular/dist/fesm5.js");
 /* harmony import */ var _ionic_native_local_notifications_ngx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @ionic-native/local-notifications/ngx */ "./node_modules/@ionic-native/local-notifications/ngx/index.js");
 /* harmony import */ var _services_storage_storage_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../services/storage/storage.service */ "./src/app/services/storage/storage.service.ts");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+
 
 
 
@@ -151,6 +153,19 @@ var ModulosPage = /** @class */ (function () {
                     case 2:
                         loading = _b.sent();
                         this._ws.listarSensoresCliente().then(function (resp) { return resp.toPromise(); }).then(function (resposta) {
+                            if (resposta.isAuthenticated) {
+                                _this.listSensores = resposta.sensores;
+                            }
+                            else {
+                                _this._storageService.saveJWT(undefined).then(function (res) {
+                                    _this._alertService.defaultAlert("Oops!", null, "Sua sessão expirou, faça o login novamente!", ["Vamos lá!"]);
+                                    _this._nav.navigate(['/']);
+                                });
+                            }
+                            loading.dismiss();
+                        });
+                        Object(rxjs__WEBPACK_IMPORTED_MODULE_11__["interval"])(10000)
+                            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["startWith"])(0), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["switchMap"])(function () { return _this._ws.listarSensoresCliente().then(function (resp) { return resp.toPromise(); }); })).subscribe(function (resposta) {
                             if (resposta.isAuthenticated) {
                                 _this.listSensores = resposta.sensores;
                             }
