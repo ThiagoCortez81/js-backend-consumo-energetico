@@ -133,10 +133,23 @@ export class DadosMedicoesController {
                                     console.debug("Enviando alertas para os smartphones...");
                                     NotificationController.buscaTokens(sensor.idCliente).then((tokens: any) => {
                                         for (let tokenBusca of tokens) {
-                                            const notificationTitle = `ALERTA!`;
-                                            const notificationBody = `Atenção, o seu consumo ultrapassou o limite de R$ ${parseFloat(sensor.limiteAlerta).toFixed(2).toString().replace('.', ',')}. Esse mês você já consumiu o equivalente à R$ ${valorFinalKW.toFixed(2).toString().replace('.', ',')}!`;
-                                            if (tokenBusca.token != null)
-                                                NotificationController.enviarNotificacao(tokenBusca.token, notificationTitle, notificationBody);
+                                            let enviaNotificacao = true;
+                                            if (tokenBusca.ultimaNotificacao != null) {
+                                                const now = new Date();
+                                                const ultimaNotificacao = new Date(tokenBusca.ultimaNotificacao.toString());
+                                                enviaNotificacao = ((now.getTime() - ultimaNotificacao.getTime()) > (1 * 60000));
+
+                                                console.log('ultimaNotificacao=> ', ultimaNotificacao);
+                                            }
+                                            tokenBusca.ultimaNotificacao = new Date().toISOString();
+                                            tokenBusca.save();
+
+                                            if (enviaNotificacao) {
+                                                const notificationTitle = `ALERTA!`;
+                                                const notificationBody = `Atenção, o seu consumo ultrapassou o limite de R$ ${parseFloat(sensor.limiteAlerta).toFixed(2).toString().replace('.', ',')}. Esse mês você já consumiu o equivalente à R$ ${valorFinalKW.toFixed(2).toString().replace('.', ',')}!`;
+                                                if (tokenBusca.token != null)
+                                                    NotificationController.enviarNotificacao(tokenBusca.token, notificationTitle, notificationBody);
+                                            }
                                         }
                                     });
                                 }
